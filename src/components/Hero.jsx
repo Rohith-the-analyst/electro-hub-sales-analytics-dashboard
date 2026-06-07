@@ -2,8 +2,6 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Github, Linkedin, Download, ArrowDown, BarChart2, Database, TrendingUp } from 'lucide-react'
 
-const PROFILE_IMAGE = null
-
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
   visible: (i) => ({
@@ -236,49 +234,21 @@ export default function Hero() {
                 position: 'absolute', inset: 2, borderRadius: '50%',
                 background: 'var(--bg-primary)',
               }} />
+              <img
+                src="/WhatsApp_Image_2026-06-07_at_15.57.56.jpeg"
+                alt="Rohith G — Data Analyst & Power BI Developer"
+                style={{
+                  position: 'absolute', inset: 8,
+                  width: 'calc(100% - 16px)', height: 'calc(100% - 16px)',
+                  borderRadius: '50%',
+                  objectFit: 'cover',
+                  objectPosition: 'top center',
+                  border: '2px solid rgba(225,29,72,0.4)',
+                }}
+              />
               <div style={{
-                position: 'absolute', inset: 8,
-                width: 'calc(100% - 16px)', height: 'calc(100% - 16px)',
-                borderRadius: '50%',
-                border: '2px solid rgba(225,29,72,0.3)',
-                overflow: 'hidden',
-                background: 'linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}>
-                <svg viewBox="0 0 200 200" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-                  <defs>
-                    <radialGradient id="bgGrad" cx="50%" cy="50%" r="50%">
-                      <stop offset="0%" stopColor="#1e1e1e" />
-                      <stop offset="100%" stopColor="#0a0a0a" />
-                    </radialGradient>
-                    <radialGradient id="bodyGrad" cx="50%" cy="40%" r="60%">
-                      <stop offset="0%" stopColor="#2a2a2a" />
-                      <stop offset="100%" stopColor="#111111" />
-                    </radialGradient>
-                  </defs>
-                  <circle cx="100" cy="100" r="100" fill="url(#bgGrad)" />
-                  {/* Subtle grid overlay */}
-                  <line x1="0" y1="100" x2="200" y2="100" stroke="rgba(225,29,72,0.08)" strokeWidth="0.5" />
-                  <line x1="100" y1="0" x2="100" y2="200" stroke="rgba(225,29,72,0.08)" strokeWidth="0.5" />
-                  {/* Head */}
-                  <circle cx="100" cy="72" r="30" fill="#2c2c2c" />
-                  <circle cx="100" cy="72" r="28" fill="#252525" />
-                  {/* Face highlight */}
-                  <ellipse cx="100" cy="65" rx="18" ry="14" fill="rgba(255,255,255,0.03)" />
-                  {/* Body */}
-                  <ellipse cx="100" cy="155" rx="46" ry="36" fill="url(#bodyGrad)" />
-                  <ellipse cx="100" cy="148" rx="38" ry="28" fill="#1e1e1e" />
-                  {/* Shirt collar accent */}
-                  <path d="M82 138 L100 148 L118 138" stroke="rgba(225,29,72,0.5)" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-                  {/* Monogram */}
-                  <text x="100" y="80" textAnchor="middle" dominantBaseline="middle" fontFamily="'Space Grotesk', sans-serif" fontWeight="700" fontSize="28" fill="rgba(225,29,72,0.9)">R</text>
-                  {/* Inner ring */}
-                  <circle cx="100" cy="100" r="97" fill="none" stroke="rgba(225,29,72,0.12)" strokeWidth="1" />
-                </svg>
-              </div>
-              <div style={{
-                position: 'absolute', inset: -24, borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(225,29,72,0.12) 0%, transparent 70%)',
+                position: 'absolute', inset: -32, borderRadius: '50%',
+                background: 'radial-gradient(circle, rgba(225,29,72,0.18) 0%, transparent 65%)',
                 pointerEvents: 'none',
               }} />
             </div>
