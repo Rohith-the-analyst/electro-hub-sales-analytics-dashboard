@@ -62,7 +62,7 @@ export default function About() {
                 View GitHub Profile
               </a>
               <a
-                href="https://linkedin.com/in/rohithg-analyst"
+                href="https://www.linkedin.com/in/rohith-g-4246a8402/"
                 target="_blank" rel="noopener noreferrer"
                 className="btn-outline"
               >

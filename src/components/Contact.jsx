@@ -1,20 +1,23 @@
 import { useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { Mail, Linkedin, Github, Send, MapPin, Clock } from 'lucide-react'
+import { Mail, Linkedin, Github, Send, MapPin, Clock, Copy, Check } from 'lucide-react'
+
+const EMAIL = 'rohithg0605@gmail.com'
 
 const contactLinks = [
   {
     icon: Mail,
     label: 'Email',
-    value: 'rohith.analyst@gmail.com',
-    href: 'mailto:rohith.analyst@gmail.com',
+    value: EMAIL,
+    href: `mailto:${EMAIL}`,
     desc: 'Best way to reach me',
+    copyable: true,
   },
   {
     icon: Linkedin,
     label: 'LinkedIn',
-    value: 'linkedin.com/in/rohithg-analyst',
-    href: 'https://linkedin.com/in/rohithg-analyst',
+    value: 'linkedin.com/in/rohith-g-4246a8402',
+    href: 'https://www.linkedin.com/in/rohith-g-4246a8402/',
     desc: 'Connect professionally',
   },
   {
@@ -25,6 +28,83 @@ const contactLinks = [
     desc: 'Check my repositories',
   },
 ]
+
+function ContactCard({ icon: Icon, label, value, href, desc, copyable, index, inView }) {
+  const [copied, setCopied] = useState(false)
+
+  const handleCopy = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    navigator.clipboard.writeText(value).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
+  }
+
+  return (
+    <motion.a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      initial={{ opacity: 0, x: -20 }}
+      animate={inView ? { opacity: 1, x: 0 } : {}}
+      transition={{ delay: 0.3 + index * 0.1, duration: 0.6 }}
+      style={{
+        display: 'flex', alignItems: 'center', gap: 16,
+        padding: '20px 24px',
+        background: 'rgba(255,255,255,0.02)',
+        border: '1px solid rgba(255,255,255,0.07)',
+        borderRadius: 16,
+        textDecoration: 'none', color: 'inherit',
+        transition: 'all 0.3s cubic-bezier(0.4,0,0.2,1)',
+        position: 'relative',
+      }}
+      whileHover={{
+        borderColor: 'rgba(225,29,72,0.3)',
+        background: 'rgba(225,29,72,0.04)',
+        x: 4,
+      }}
+    >
+      <div style={{
+        width: 48, height: 48, borderRadius: 14, flexShrink: 0,
+        background: 'rgba(225,29,72,0.1)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+      }}>
+        <Icon size={20} color="var(--red-400)" />
+      </div>
+
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 2 }}>
+          {label}
+        </div>
+        <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {value}
+        </div>
+        <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{desc}</div>
+      </div>
+
+      {copyable && (
+        <button
+          onClick={handleCopy}
+          title="Copy email"
+          style={{
+            flexShrink: 0,
+            width: 34, height: 34,
+            borderRadius: 8,
+            border: `1px solid ${copied ? 'rgba(34,197,94,0.4)' : 'rgba(255,255,255,0.1)'}`,
+            background: copied ? 'rgba(34,197,94,0.08)' : 'rgba(255,255,255,0.04)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'pointer',
+            transition: 'all 0.2s',
+            color: copied ? '#22c55e' : 'var(--text-muted)',
+          }}
+        >
+          {copied ? <Check size={14} /> : <Copy size={14} />}
+        </button>
+      )}
+    </motion.a>
+  )
+}
 
 export default function Contact() {
   const ref = useRef(null)
@@ -72,7 +152,7 @@ export default function Contact() {
         </motion.div>
 
         <div className="contact-grid">
-          {/* Contact links */}
+          {/* Contact cards */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
@@ -90,47 +170,8 @@ export default function Contact() {
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-              {contactLinks.map(({ icon: Icon, label, value, href, desc }, i) => (
-                <motion.a
-                  key={label}
-                  href={href}
-                  target={href.startsWith('mailto') ? undefined : '_blank'}
-                  rel="noopener noreferrer"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={inView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ delay: 0.3 + i * 0.1, duration: 0.6 }}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: 16,
-                    padding: '20px 24px',
-                    background: 'rgba(255,255,255,0.02)',
-                    border: '1px solid rgba(255,255,255,0.07)',
-                    borderRadius: 16,
-                    textDecoration: 'none', color: 'inherit',
-                    transition: 'all 0.3s cubic-bezier(0.4,0,0.2,1)',
-                  }}
-                  whileHover={{
-                    borderColor: 'rgba(225,29,72,0.3)',
-                    background: 'rgba(225,29,72,0.04)',
-                    x: 4,
-                  }}
-                >
-                  <div style={{
-                    width: 48, height: 48, borderRadius: 14, flexShrink: 0,
-                    background: 'rgba(225,29,72,0.1)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  }}>
-                    <Icon size={20} color="var(--red-400)" />
-                  </div>
-                  <div>
-                    <div style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 2 }}>
-                      {label}
-                    </div>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 2 }}>
-                      {value}
-                    </div>
-                    <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{desc}</div>
-                  </div>
-                </motion.a>
+              {contactLinks.map((link, i) => (
+                <ContactCard key={link.label} {...link} index={i} inView={inView} />
               ))}
             </div>
           </motion.div>
@@ -242,3 +283,4 @@ export default function Contact() {
     </section>
   )
 }
+

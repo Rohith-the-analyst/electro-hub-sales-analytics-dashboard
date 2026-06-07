@@ -34,8 +34,8 @@ export default function Footer() {
           <div style={{ display: 'flex', gap: 8 }}>
             {[
               { icon: Github, href: 'https://github.com/Rohith-the-analyst' },
-              { icon: Linkedin, href: 'https://linkedin.com/in/rohithg-analyst' },
-              { icon: Mail, href: 'mailto:rohith.analyst@gmail.com' },
+              { icon: Linkedin, href: 'https://www.linkedin.com/in/rohith-g-4246a8402/' },
+              { icon: Mail, href: 'mailto:rohithg0605@gmail.com' },
             ].map(({ icon: Icon, href }) => (
               <a
                 key={href}

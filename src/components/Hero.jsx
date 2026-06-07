@@ -158,7 +158,7 @@ export default function Hero() {
                 <Github size={15} />
                 GitHub
               </a>
-              <a href="https://linkedin.com/in/rohithg-analyst" target="_blank" rel="noopener noreferrer" className="btn-outline">
+              <a href="https://www.linkedin.com/in/rohith-g-4246a8402/" target="_blank" rel="noopener noreferrer" className="btn-outline">
                 <Linkedin size={15} />
                 LinkedIn
               </a>
