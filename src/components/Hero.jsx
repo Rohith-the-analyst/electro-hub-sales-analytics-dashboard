@@ -150,7 +150,7 @@ export default function Hero() {
                 <BarChart2 size={15} />
                 View Projects
               </button>
-              <a href="#" className="btn-outline">
+              <a href="/dS_RESUME.pdf" download target="_blank" rel="noopener noreferrer" className="btn-outline">
                 <Download size={15} />
                 Resume
               </a>

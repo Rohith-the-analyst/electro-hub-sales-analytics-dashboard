@@ -115,8 +115,10 @@ export default function Navbar() {
         </nav>
 
         <a
-          href="#"
+          href="/dS_RESUME.pdf"
           download
+          target="_blank"
+          rel="noopener noreferrer"
           className="btn-primary nav-cta"
           style={{ padding: '8px 20px', fontSize: 13 }}
         >
