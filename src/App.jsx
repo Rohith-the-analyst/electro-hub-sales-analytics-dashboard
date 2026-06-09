@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import LoadingScreen from './components/LoadingScreen.jsx'
 import Navbar from './components/Navbar.jsx'
 import Hero from './components/Hero.jsx'
@@ -12,10 +12,11 @@ import ParticleField from './components/ParticleField.jsx'
 
 export default function App() {
   const [loading, setLoading] = useState(true)
+  const handleLoadingComplete = useCallback(() => setLoading(false), [])
 
   return (
     <>
-      <LoadingScreen onComplete={() => setLoading(false)} />
+      <LoadingScreen onComplete={handleLoadingComplete} />
       {!loading && (
         <div style={{ position: 'relative', minHeight: '100vh' }}>
           <ParticleField />

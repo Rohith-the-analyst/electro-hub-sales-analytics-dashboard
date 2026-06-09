@@ -1,15 +1,17 @@
 import { useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { Mail, Linkedin, Github, Send, MapPin, Clock, Copy, Check } from 'lucide-react'
+import { Mail, Linkedin, Github, Send, MapPin, Clock, Copy, Check, Loader as Loader2 } from 'lucide-react'
+import emailjs from '@emailjs/browser'
+import { EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, EMAILJS_PUBLIC_KEY } from '../emailjsConfig'
 
-const EMAIL = 'rohithg0605@gmail.com'
+const RECIPIENT_EMAIL = 'rohithg0605@gmail.com'
 
 const contactLinks = [
   {
     icon: Mail,
     label: 'Email',
-    value: EMAIL,
-    href: `mailto:${EMAIL}`,
+    value: RECIPIENT_EMAIL,
+    href: `mailto:${RECIPIENT_EMAIL}`,
     desc: 'Best way to reach me',
     copyable: true,
   },
@@ -106,17 +108,60 @@ function ContactCard({ icon: Icon, label, value, href, desc, copyable, index, in
   )
 }
 
+const EMPTY_FORM = { name: '', email: '', message: '' }
+
+function validate(form) {
+  if (!form.name.trim()) return 'Name is required.'
+  if (!form.email.trim()) return 'Email is required.'
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) return 'Enter a valid email address.'
+  if (!form.message.trim()) return 'Message is required.'
+  if (form.message.trim().length < 10) return 'Message must be at least 10 characters.'
+  return null
+}
+
 export default function Contact() {
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '-80px' })
-  const [formState, setFormState] = useState({ name: '', email: '', message: '' })
-  const [submitted, setSubmitted] = useState(false)
+  const [formState, setFormState] = useState(EMPTY_FORM)
+  const [status, setStatus] = useState('idle') // 'idle' | 'sending' | 'success' | 'error'
+  const [errorMsg, setErrorMsg] = useState('')
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    setSubmitted(true)
-    setTimeout(() => setSubmitted(false), 4000)
-    setFormState({ name: '', email: '', message: '' })
+
+    const validationError = validate(formState)
+    if (validationError) {
+      setErrorMsg(validationError)
+      setStatus('error')
+      return
+    }
+
+    setStatus('sending')
+    setErrorMsg('')
+
+    try {
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        {
+          from_name: formState.name.trim(),
+          from_email: formState.email.trim(),
+          message: formState.message.trim(),
+          to_email: RECIPIENT_EMAIL,
+        },
+        EMAILJS_PUBLIC_KEY,
+      )
+      setStatus('success')
+      setFormState(EMPTY_FORM)
+    } catch {
+      setStatus('error')
+      setErrorMsg('Something went wrong. Please try again or email me directly.')
+    }
+  }
+
+  const handleChange = (key) => (e) => {
+    setFormState(s => ({ ...s, [key]: e.target.value }))
+    if (status === 'error') { setStatus('idle'); setErrorMsg('') }
   }
 
   const container = { hidden: {}, visible: { transition: { staggerChildren: 0.1 } } }
@@ -124,6 +169,8 @@ export default function Contact() {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] } },
   }
+
+  const isSending = status === 'sending'
 
   return (
     <section id="contact" ref={ref} style={{ padding: '100px 0 80px', position: 'relative', zIndex: 1 }}>
@@ -188,7 +235,7 @@ export default function Contact() {
               Send a Message
             </h3>
 
-            {submitted ? (
+            {status === 'success' ? (
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -201,11 +248,23 @@ export default function Contact() {
                 }}
               >
                 <div style={{ fontSize: 40, marginBottom: 12 }}>✅</div>
-                <p style={{ fontSize: 15, color: '#22c55e', fontWeight: 600 }}>Message sent!</p>
+                <p style={{ fontSize: 15, color: '#22c55e', fontWeight: 600 }}>Message sent successfully!</p>
                 <p style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 6 }}>I'll get back to you shortly.</p>
+                <button
+                  onClick={() => setStatus('idle')}
+                  style={{
+                    marginTop: 20, padding: '8px 20px',
+                    background: 'rgba(34,197,94,0.1)',
+                    border: '1px solid rgba(34,197,94,0.25)',
+                    borderRadius: 8, color: '#22c55e',
+                    fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                  }}
+                >
+                  Send another
+                </button>
               </motion.div>
             ) : (
-              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }} noValidate>
                 {[
                   { label: 'Your Name', key: 'name', type: 'text', placeholder: 'John Doe' },
                   { label: 'Email Address', key: 'email', type: 'email', placeholder: 'john@example.com' },
@@ -218,8 +277,8 @@ export default function Contact() {
                       type={field.type}
                       placeholder={field.placeholder}
                       value={formState[field.key]}
-                      onChange={e => setFormState(s => ({ ...s, [field.key]: e.target.value }))}
-                      required
+                      onChange={handleChange(field.key)}
+                      disabled={isSending}
                       style={{
                         width: '100%', padding: '12px 16px',
                         background: 'rgba(255,255,255,0.03)',
@@ -228,6 +287,7 @@ export default function Contact() {
                         fontSize: 14, outline: 'none',
                         transition: 'border-color 0.2s',
                         fontFamily: 'var(--font-sans)',
+                        opacity: isSending ? 0.6 : 1,
                       }}
                       onFocus={e => e.target.style.borderColor = 'rgba(225,29,72,0.4)'}
                       onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.08)'}
@@ -243,8 +303,8 @@ export default function Contact() {
                     placeholder="Tell me about your project or opportunity..."
                     rows={5}
                     value={formState.message}
-                    onChange={e => setFormState(s => ({ ...s, message: e.target.value }))}
-                    required
+                    onChange={handleChange('message')}
+                    disabled={isSending}
                     style={{
                       width: '100%', padding: '12px 16px',
                       background: 'rgba(255,255,255,0.03)',
@@ -253,15 +313,53 @@ export default function Contact() {
                       fontSize: 14, outline: 'none', resize: 'vertical',
                       fontFamily: 'var(--font-sans)', lineHeight: 1.6,
                       transition: 'border-color 0.2s',
+                      opacity: isSending ? 0.6 : 1,
                     }}
                     onFocus={e => e.target.style.borderColor = 'rgba(225,29,72,0.4)'}
                     onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.08)'}
                   />
                 </div>
 
-                <button type="submit" className="btn-primary" style={{ width: '100%', justifyContent: 'center', padding: '14px' }}>
-                  <Send size={15} />
-                  Send Message
+                {status === 'error' && errorMsg && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    style={{
+                      padding: '12px 16px',
+                      background: 'rgba(225,29,72,0.06)',
+                      border: '1px solid rgba(225,29,72,0.25)',
+                      borderRadius: 8,
+                      fontSize: 13,
+                      color: 'var(--red-400)',
+                      lineHeight: 1.5,
+                    }}
+                  >
+                    {errorMsg}
+                  </motion.div>
+                )}
+
+                <button
+                  type="submit"
+                  className="btn-primary"
+                  disabled={isSending}
+                  style={{
+                    width: '100%', justifyContent: 'center', padding: '14px',
+                    opacity: isSending ? 0.75 : 1,
+                    cursor: isSending ? 'not-allowed' : 'pointer',
+                    transition: 'opacity 0.2s',
+                  }}
+                >
+                  {isSending ? (
+                    <>
+                      <Loader2 size={15} style={{ animation: 'spin 0.8s linear infinite' }} />
+                      Sending…
+                    </>
+                  ) : (
+                    <>
+                      <Send size={15} />
+                      Send Message
+                    </>
+                  )}
                 </button>
               </form>
             )}
@@ -279,8 +377,10 @@ export default function Contact() {
         @media (max-width: 900px) {
           .contact-grid { grid-template-columns: 1fr !important; }
         }
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
       `}</style>
     </section>
   )
 }
-

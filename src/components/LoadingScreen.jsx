@@ -1,16 +1,25 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 export default function LoadingScreen({ onComplete }) {
   const [phase, setPhase] = useState(0)
   // phase 0: count up, phase 1: text reveal, phase 2: exit
+  const onCompleteRef = useRef(onComplete)
+  const hasRunRef = useRef(false)
 
   useEffect(() => {
+    onCompleteRef.current = onComplete
+  })
+
+  useEffect(() => {
+    if (hasRunRef.current) return
+    hasRunRef.current = true
+
     const t1 = setTimeout(() => setPhase(1), 1400)
     const t2 = setTimeout(() => setPhase(2), 2800)
-    const t3 = setTimeout(() => onComplete(), 3600)
+    const t3 = setTimeout(() => onCompleteRef.current(), 3600)
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3) }
-  }, [onComplete])
+  }, [])
 
   return (
     <AnimatePresence>
