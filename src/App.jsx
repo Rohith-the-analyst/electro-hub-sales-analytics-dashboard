@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import LoadingScreen from './components/LoadingScreen.jsx'
 import Navbar from './components/Navbar.jsx'
 import Hero from './components/Hero.jsx'
@@ -17,21 +18,28 @@ export default function App() {
   return (
     <>
       <LoadingScreen onComplete={handleLoadingComplete} />
-      {!loading && (
-        <div style={{ position: 'relative', minHeight: '100vh' }}>
-          <ParticleField />
-          <Navbar />
-          <main>
-            <Hero />
-            <VideoIntro />
-            <About />
-            <Skills />
-            <Projects />
-            <Contact />
-          </main>
-          <Footer />
-        </div>
-      )}
+      <AnimatePresence>
+        {!loading && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+            style={{ position: 'relative', minHeight: '100vh' }}
+          >
+            <ParticleField />
+            <Navbar />
+            <main>
+              <Hero />
+              <VideoIntro />
+              <About />
+              <Skills />
+              <Projects />
+              <Contact />
+            </main>
+            <Footer />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   )
 }
